@@ -19,10 +19,14 @@
     <hr>
     <a href="{{path('downloadFile')}}"><button class="btn btn-dark">Download File Json</button></a>
     <hr>
-
-{{ message }}
+    {{ message }}
     <hr>
     <a href="{{path('sendMail')}}"><button class="btn btn-dark">Send mail</button></a>
+    <hr>
+    {{ app.request.get('envio') }}
+
+
+
 
 
 

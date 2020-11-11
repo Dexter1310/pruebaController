@@ -36,7 +36,6 @@ class NewMessage
             ->to('jo@ascetic.io')
             ->subject('Site update just happened!')
             ->text('Someone just updated the site. We told them: '.$this->getHappyMessage());
-
         $this->mail->send($email);
         return "Mensaje enviado";
     }
