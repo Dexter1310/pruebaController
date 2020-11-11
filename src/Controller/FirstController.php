@@ -10,14 +10,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FirstController extends AbstractController
 {
+    private $message;
+
+    /**
+     * FirstController constructor.
+     * @param $message
+     */
+    public function __construct(NewMessage $message)
+    {
+        $this->message = $message;
+    }
+
     /**
      * @Route("/", name="first")
      */
-    public function index(NewMessage $message): Response
+    public function index(): Response
     {
         $t=$this->json(['username' => 'jane.doe','apellidos'=>'orti']);
-        $this->addFlash('mensaje',$t);
-        $m=$message->getHappyMessage();
+        $this->addFlash('success',$t);
+        $m=$this->message->getHappyMessage();
         return $this->render('first/index.html.twig', [
             'message' => $m,
         ]);
@@ -34,8 +45,8 @@ class FirstController extends AbstractController
     /**
      * @Route("sendMail/", name="sendMail")
      */
-    public function sendMail(NewMessage $mail){
-        $send=$mail->sendMail();
+    public function sendMail(){
+        $send=$this->message->sendMail();
         return $this->redirectToRoute('first',['envio'=>$send]);
 
     }
