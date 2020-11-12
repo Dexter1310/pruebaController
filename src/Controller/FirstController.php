@@ -79,6 +79,7 @@ class FirstController extends AbstractController
                 'createdAt' => $dateCallback,
             ],
         ];
+//      TODO:formato JSON:
         $normalizer = new GetSetMethodNormalizer(null, null, null, null, null, $defaultContext);
         $serializer = new Serializer([$normalizer], [$encoder]);
         $json=$serializer->serialize($this->us, 'json');
