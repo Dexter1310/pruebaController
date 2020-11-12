@@ -4,10 +4,12 @@ namespace App\Controller;
 use App\Entity\Usuario;
 use App\service\NewMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -31,6 +33,7 @@ class FirstController extends AbstractController
         $this->message = $message;
         $this->us=new Usuario();
         $this->us->setNombre("Javier");
+
     }
     /**
      * @Route("/", name="first")
@@ -75,8 +78,15 @@ class FirstController extends AbstractController
         $normalizer = new GetSetMethodNormalizer(null, null, null, null, null, $defaultContext);
         $serializer = new Serializer([$normalizer], [$encoder]);
         $json=$serializer->serialize($this->us, 'json');
-        return $this->render('first/serializer.html.twig',['serializer'=>$json]);
 
+
+        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+        $xml=$serializer->serialize($this->us,'xml');
+
+
+        return $this->render('first/serializer.html.twig',['serializer'=>$json,'xml'=>$xml]);
     }
 
 }
