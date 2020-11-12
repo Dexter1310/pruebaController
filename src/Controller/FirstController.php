@@ -45,7 +45,6 @@ class FirstController extends AbstractController
         $t=$this->json(['username' => 'jane.doe','apellidos'=>'orti']);
         $this->addFlash('success',$t);
         $m=$this->message->getHappyMessage();
-
         return $this->render('first/index.html.twig', [
             'message' => $m,'nombre'=>$this->us->getNombre(),'id'=>$this->us->getId(),
         ]);
@@ -74,11 +73,7 @@ class FirstController extends AbstractController
         $dateCallback = function ($innerObject, $outerObject, string $attributeName, string $format = null, array $context = []) {
             return $innerObject instanceof \DateTime ? $innerObject->format(\DateTime::ISO8601) : '';
         };
-        $defaultContext = [
-            AbstractNormalizer::CALLBACKS => [
-                'createdAt' => $dateCallback,
-            ],
-        ];
+        $defaultContext = [AbstractNormalizer::CALLBACKS => ['createdAt' => $dateCallback,],];
 //      TODO:formato JSON:
         $normalizer = new GetSetMethodNormalizer(null, null, null, null, null, $defaultContext);
         $serializer = new Serializer([$normalizer], [$encoder]);

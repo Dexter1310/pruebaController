@@ -40,6 +40,7 @@
         "symfony/yaml": "4.4.*",
         "true/punycode": "^2.1",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/intl-extra": "^3.1",
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {

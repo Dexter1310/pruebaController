@@ -3,7 +3,11 @@
 {% block title %}Hello FirstController!{% endblock %}
 {% block body %}
     <div class="container">
-     <h1>Serializer</h1>
+            <h1>
+                {% apply upper%}
+                serializer
+                {% endapply %}
+            </h1>
        <i>JSON: </i> {{ serializer }}
         <hr>
         <i>XML: </i> {{ xml }}
@@ -11,6 +15,135 @@
         <i>Deserializer JSON o XML: </i> {{deserializer}}
         <hr>
         <a href="{{path('first')}}"><button class="btn btn-warning">volver</button></a>
+        <hr>
+
+        {#ETIQUETAS #}
+
+        <h2>Etiquetas </h2>
+        <p><b>Include y embed</b> incluye contenido de plantilla</p>
+        {% include 'first/plantilla.html.twig' %}
+        {% embed 'first/plantilla.html.twig' %}{% endembed %}
+        <p><b>apply</b> filtro</p>
+        {% apply upper %}
+            {% include 'first/plantilla.html.twig' %}
+        {% endapply %}
+        {% include 'first/plantilla.html.twig' %}
+        <p><b>Verbatim</b> La verbatim etiqueta marca las secciones como texto sin formato que no se debe analizar</p>
+        {% verbatim %}
+        <ul>
+        {% for item in seq %}
+        <li>{{ item }}</li>
+        {% endfor %}
+        </ul>
+        {% endverbatim %}
+        <p><b>With</b> Utilice la with etiqueta para crear un nuevo ámbito interno. Las variables establecidas dentro de este alcance no son visibles fuera del alcance</p>
+        {% with %}
+            {% set foo = 42 %}
+            <i>{{ foo }} : Es solo imprimible entre la etiqueta with</i> {# foo is 42 here #}
+        {% endwith %}
+        {#        No es imprimible {{ foo }} #}{# foo is 42 no here #}
+        <hr>
+
+        {#FILTERS #}
+        <h2>Filters</h2>
+        <p><b>Batch</b>
+            El batchfiltro "agrupa" elementos devolviendo una lista de listas con el número dado de elementos. Se puede proporcionar un segundo parámetro y utilizarlo para completar los elementos que faltan
+        {% set items = ['a', 'b', 'c', 'd'] %}
+        <table>
+            {% for row in items|batch(3, 'Elemento para completar el grupo de 3') %}
+                <ul>
+                    {% for column in row %}
+                        <li>{{ column }}</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </table></p>
+        <p><b>Capitalize:</b> devuelve el primer valor en mayusculas
+        {{ 'my first car'|capitalize }}</p>
+        <br>
+         <p><b>Columm:</b> El column filtro devuelve los valores de una sola columna en la matriz de entrada.
+        {% set items = [{ 'fruit' : 'apple'}, {'fruit' : 'orange' }] %}
+        {% set fruits = items|column('fruit') %}
+        {# fruits now contains ['apple', 'orange'] #}
+        {% set data=[['orti'],['javi']]%}</p>
+        <br>
+        <p><b>json_encode</b>El json_encodefiltro devuelve la representación JSON de un valor
+        {{ data|json_encode() }}
+        <br>
+        <p><b>key: </b> Devuelve la posición</p>
+        {% set array = [{ 'fruit' : 'apple'}, {'fruit' : 'orange' },{'fruit' : 'peach' }] %}
+        {% for key in array|keys %}
+            {{ key }}
+        {% endfor %}</p>
+        <br>
+        <p><b>last: </b> Devuelve ultimos valores
+        {{ [1, 2, 3, 4]|last }}
+        {{ { a: 1, b: 2, c: 3, d: 4 }|last }}
+        {{ '1234'|last }}</p>
+        <br>
+        <p><b>lower: </b> Minuscula
+        {{ 'WELCOME'|lower }}</p>
+        <br>
+        <p><b>Join</b> El join filtro devuelve una cadena que es la concatenación de los elementos de una secuencia
+       del array [1,2,3]:  {{ [1, 2, 3]|join('|') }}  o bien  {{ [1, 2, 3]|join(', ', ' and ') }}</p><br>
+        {# outputs 1|2|3 #}
+        <p><b>trim: </b> elimina Caracteres o espacios en blanco
+            {{ '  I like Twig.  '|trim }}
+            {# outputs 'I like Twig.' #}
+            {{ '  I like Twig.'|trim('g.') }}
+            {# outputs '  I like Twi' #}
+            {{ '  I like Twig.  '|trim(side='left') }}
+            {# outputs 'I like Twig.  ' #}
+            {{ '  I like Twig.  '|trim(' ', 'right') }}
+            {# outputs '  I like Twig.' #}
+        </p>
+        <p><b>Title</b> Todas empiezan en mayuscula.
+        {{ 'my first car'|title }}</p>
+        <p><b>Slice: </b>Estraer una porcion de la cadena del array
+            <br>Cadena: [1, 2, 3, 4, 5] {% verbatim %}{{ '12345'|slice(1, 2) }}{% endverbatim %}
+            {% for i in [1, 2, 3, 4, 5]|slice(1, 2) %}
+                {# will iterate over 2 and 3 #}
+            {% endfor %}
+            Resultado:    {{ '12345'|slice(1, 2) }}</p>
+        {# outputs 23 #}
+        <p><b>url_encode : </b> codifica cadena en URL.
+            <ul>
+            <li>
+                <i>string with spaces: </i>{{ "string with spaces"|url_encode }}
+            </li>
+            <li>
+                <i>{'param': 'value', 'foo': 'bar'} </i>    {{ {'param': 'value', 'foo': 'bar'}|url_encode }}
+            </li>
+</ul>
+        </p>
+
+        {#FUNCTIONS #}
+
+        <h2>Functions</h2>
+        <p><b>Cycle:</b> Imprimira tantas veces como manda el for aunque en el array hayan menos el elemntos continuara el ciclo
+        {% verbatim %}
+        {% set fruits = ['apple', 'orange', 'citrus'] %}
+        {% for i in 0..11 %}
+            {{ cycle(fruits, i) }}
+        {% endfor %}
+        {% endverbatim %}<br>
+        Resultado:  {% set fruits = ['apple', 'orange', 'citrus'] %}
+        {% for i in 0..11 %}
+            {{ cycle(fruits, i) }}
+        {% endfor %}</p>
+
+        <p><b>dump: </b>La dumpfunción vuelca información sobre una variable de plantilla. Esto es principalmente útil para depurar una plantilla que no se comporta como se esperaba al introspectar sus variables
+
+        {{ dump() }}<br>
+            O bien varieble específicas como array fruits:
+
+            {{ dump(fruits) }}
+
+        </p>
+
     </div>
+
+
 {% endblock %}
+
 {% block javascripts %}{{ parent() }}{% endblock %}
