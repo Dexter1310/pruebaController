@@ -38,4 +38,10 @@ class Usuario
 
         return $this;
     }
+    public function setId(?string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

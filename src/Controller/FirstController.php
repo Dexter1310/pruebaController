@@ -6,6 +6,7 @@ use App\service\NewMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 use Symfony\Component\HttpFoundation\File\File;
@@ -33,6 +34,7 @@ class FirstController extends AbstractController
         $this->message = $message;
         $this->us=new Usuario();
         $this->us->setNombre("Javier");
+        $this->us->setId(23280369);
 
     }
     /**
@@ -45,7 +47,7 @@ class FirstController extends AbstractController
         $m=$this->message->getHappyMessage();
 
         return $this->render('first/index.html.twig', [
-            'message' => $m,'nombre'=>$this->us->getNombre()
+            'message' => $m,'nombre'=>$this->us->getNombre(),'id'=>$this->us->getId(),
         ]);
     }
     /**
@@ -62,8 +64,10 @@ class FirstController extends AbstractController
         $send=$this->message->sendMail();
         return $this->redirectToRoute('first',['envio'=>$send]);
     }
+
     /**
      * @Route("/serializer/", name="serializer")
+     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function serializer(){
         $encoder = new JsonEncoder();
@@ -78,15 +82,17 @@ class FirstController extends AbstractController
         $normalizer = new GetSetMethodNormalizer(null, null, null, null, null, $defaultContext);
         $serializer = new Serializer([$normalizer], [$encoder]);
         $json=$serializer->serialize($this->us, 'json');
-
-
+//      TODO:formato XML:
         $encoders = [new XmlEncoder(), new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
         $xml=$serializer->serialize($this->us,'xml');
-
-
-        return $this->render('first/serializer.html.twig',['serializer'=>$json,'xml'=>$xml]);
+//      TODO:deseralizer:
+        $serializer2 = new Serializer([new GetSetMethodNormalizer(), new ArrayDenormalizer()], [new JsonEncoder(),new XmlEncoder()]
+        );
+        $repository = $serializer2->deserialize($xml, Usuario::class, 'xml');
+        $nom=$repository->getNombre();$id=$repository->getId();
+        return $this->render('first/serializer.html.twig',['serializer'=>$json,'xml'=>$xml,'deserializer'=>"\tnombre: ".$nom. "\n\nID: ".$id ]);
     }
 
 }
