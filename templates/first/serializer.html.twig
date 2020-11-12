@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}{{ parent() }}{% endblock %}
+{% block title %}Hello FirstController!{% endblock %}
+{% block body %}
+    <div class="container">
+     <h1>Serializer</h1>
+       <i>JSON: </i> {{ serializer }}
+        <a href="{{path('first')}}"><button class="btn btn-warning">volver</button></a>
+    </div>
+{% endblock %}
+{% block javascripts %}{{ parent() }}{% endblock %}

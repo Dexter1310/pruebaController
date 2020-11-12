@@ -3,8 +3,6 @@
 {% block title %}Hello FirstController!{% endblock %}
 
 {% block body %}
-
-
 <div class="container">
     <h1>Controlador de pruebas</h1>
 <hr>
@@ -20,12 +18,10 @@
     <hr>
     <a href="{{path('sendMail')}}"><button class="btn btn-dark">Send mail</button></a>
     <a href="https://symfony.com/doc/current/index.html"><button class="btn btn-dark">Documentation</button></a>
-
-    <hr>
     {{ app.request.get('envio') }}
-
-
-
+    <hr>
+    <a href="{{path('serializer')}}"><button class="btn btn-warning">Serializar</button></a>
+    <p>Objeto Usuario:   nombre:{{ nombre }}</p>
 
 </div>
 {% endblock %}
